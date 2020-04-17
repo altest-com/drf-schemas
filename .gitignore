@@ -1,0 +1,11 @@
+syntax: glob
+.idea/
+.git/
+recycle/
+storage/
+.coverage
+*.sqlite3
+*.log
+clean_migrations.sh
+gitpush.sh
+__pycache__
