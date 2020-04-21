@@ -18,7 +18,7 @@ URL = 'https://github.com/altest-com/drf-schemas'
 EMAIL = 'raikelbl@gmail.com'
 AUTHOR = 'Raikel Bordón López'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
@@ -109,22 +109,22 @@ setup(
     classifiers=[
         # Trove classifiers
         'Development Status :: 1 - Planning',
-        'Environment:: Web Environment',
-        'Framework:: Django',
-        'Framework:: Django:: 2.2',
-        'Framework:: Django:: 3.0',
-        'Intended Audience:: Developers',
-        'License:: OSI Approved:: MIT License',
-        'Operating System:: OS Independent',
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.0',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
         'Natural Language :: English',
-        'Programming Language:: Python:: 3',
-        'Programming Language:: Python:: 3.5',
-        'Programming Language:: Python:: 3.6',
-        'Programming Language:: Python:: 3.7',
-        'Programming Language:: Python:: 3.8',
-        'Topic:: Internet:: WWW / HTTP',
-        'Topic:: Internet:: WWW / HTTP:: Dynamic Content',
-        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     # $ setup.py publish support.
     cmdclass={
