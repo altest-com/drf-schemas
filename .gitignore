@@ -3,9 +3,15 @@ syntax: glob
 .git/
 recycle/
 storage/
+*.egg-info
+build
+dist
+*.py.lprof
+*.so
 .coverage
 *.sqlite3
 *.log
 clean_migrations.sh
 gitpush.sh
 __pycache__
+
