@@ -348,8 +348,6 @@ class ItemSchema(TrackTimeModel):
 
 class Item(TrackTimeModel):
 
-    name = models.CharField(max_length=255)
-
     schema = models.ForeignKey(
         'ItemSchema',
         on_delete=models.CASCADE,
@@ -357,4 +355,4 @@ class Item(TrackTimeModel):
     )
 
     def __str__(self):
-        return self.name
+        return f'Item [{self.pk}]'

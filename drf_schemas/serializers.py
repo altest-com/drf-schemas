@@ -649,10 +649,6 @@ class ItemSchemaSerializer(MaskFieldSerializer, TrackTimeSerializer):
 
 class ItemSerializer(MaskFieldSerializer, TrackTimeSerializer):
 
-    name = serializers.CharField(
-        help_text='Item name'
-    )
-
     schema = serializers.PrimaryKeyRelatedField(
         queryset=models.ItemSchema.objects.all(),
         help_text='Item schema ID'
@@ -703,7 +699,6 @@ class ItemSerializer(MaskFieldSerializer, TrackTimeSerializer):
         model = models.Item
         fields = TrackTimeSerializer.Meta.fields + (
             'id',
-            'name',
             'schema',
             'boolean_values',
             'choices_values',
@@ -720,9 +715,7 @@ class ItemFilterSerializer(serializers.Serializer):
 
     order_by = serializers.CharField(required=False)
 
-    name_icontains = serializers.CharField(required=False)
-
-    schema_pk = serializers.IntegerField(required=False)
+    schema_id = serializers.IntegerField(required=False)
 
     schema__in = serializers.ListSerializer(
         child=serializers.IntegerField(),

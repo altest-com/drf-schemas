@@ -74,7 +74,7 @@ _multi_values = (
 )
 
 
-def update_item(item=None):
+def update_item(item: models.Item = None):
 
     if item is None:
         return
@@ -82,6 +82,7 @@ def update_item(item=None):
     schema = item.schema
 
     for param in _field_params:
+
         fields_queryset = getattr(schema, param['fields']).all()
         values_queryset = getattr(item, param['values']).all()
 
