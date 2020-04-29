@@ -17,6 +17,7 @@ class BooleanFieldResource(resources.ModelResource):
 class ChoicesFieldResource(resources.ModelResource):
     class Meta:
         model = models.ChoicesField
+        exclude = ('default',)
 
 
 class DateTimeFieldResource(resources.ModelResource):

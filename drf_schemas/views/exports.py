@@ -40,11 +40,11 @@ class ImportView(APIView):
         file = serializer.validated_data['file']
         try:
             data = json.load(file)
-        except Exception as err:
-            raise ValidationError(f'Invalid file format: {err}')
+        except Exception as error:
+            raise ValidationError(error)
         else:
             errors = import_schemas(data)
             if errors:
-                return ValidationError(errors)
+                raise ValidationError(errors)
 
         return Response(status=status.HTTP_201_CREATED)

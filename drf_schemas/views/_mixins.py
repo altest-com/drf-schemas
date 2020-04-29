@@ -111,3 +111,27 @@ class DestroyMixin:
         instance.delete()
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+
+class FilterMixin:
+
+    def get_queryset(self):
+        queryset = self.queryset
+        params = self.request.query_params
+
+        if len(params):
+            serializer_class = self.filter_serializer_class
+            serializer = serializer_class(
+                data=params.dict(),
+                context={'request': self.request}
+            )
+            serializer.is_valid(raise_exception=True)
+
+            params = serializer.data
+            order_by = params.pop('order_by', '')
+            queryset = queryset.filter(**params)
+
+            if order_by:
+                queryset = queryset.order_by(order_by)
+
+        return queryset

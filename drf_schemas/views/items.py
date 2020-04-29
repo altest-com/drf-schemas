@@ -6,6 +6,7 @@ from ._mixins import (
     RetrieveMixin,
     DestroyMixin,
     UpdateMixin,
+    FilterMixin
 )
 from ..models import (
     Item,
@@ -16,7 +17,8 @@ from ..serializers import (
     ItemSerializer,
     ItemSchemaSerializer,
     CategorySerializer,
-    ItemFilterSerializer
+    ItemFilterSerializer,
+    ItemSchemaFilterSerializer
 )
 
 
@@ -26,6 +28,7 @@ class ItemView(
     RetrieveMixin,
     DestroyMixin,
     UpdateMixin,
+    FilterMixin,
     viewsets.GenericViewSet
 ):
 
@@ -33,26 +36,7 @@ class ItemView(
     model_name = 'Item'
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
-
-    def get_queryset(self):
-        queryset = self.queryset
-        params = self.request.query_params
-
-        if len(params):
-            serializer = ItemFilterSerializer(
-                data=params.dict(),
-                context={'request': self.request}
-            )
-            serializer.is_valid(raise_exception=True)
-
-            params = serializer.data
-            order_by = params.pop('order_by', '')
-            queryset = queryset.filter(**params)
-
-            if order_by:
-                queryset = queryset.order_by(order_by)
-
-        return queryset
+    filter_serializer_class = ItemFilterSerializer
 
 
 class CategoryView(
@@ -88,17 +72,6 @@ class ItemSchemaView(ItemView):
     model_name = 'ItemSchema'
     queryset = ItemSchema.objects.all()
     serializer_class = ItemSchemaSerializer
+    filter_serializer_class = ItemSchemaFilterSerializer
 
-    def get_queryset(self):
-        queryset = self.queryset
-
-        name = self.request.query_params.get('name', '')
-        if name:
-            queryset = queryset.filter(name__icontains=name)
-
-        order_by = self.request.query_params.get('order_by', '')
-        if order_by in ['name', 'created_at', 'updated_at']:
-            queryset = queryset.order_by(order_by)
-
-        return queryset
 

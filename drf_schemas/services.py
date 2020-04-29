@@ -135,10 +135,6 @@ _ie_resources = [{
     'resource': resources.CategoryResource,
     'model': models.Category
 }, {
-    'name': 'choices',
-    'resource': resources.ChoiceResource,
-    'model': models.Choice
-}, {
     'name': 'item_schemas',
     'resource': resources.ItemSchemaResource,
     'model': models.ItemSchema
@@ -174,6 +170,10 @@ _ie_resources = [{
     'name': 'text_fields',
     'resource': resources.TextFieldResources,
     'model': models.TextField
+}, {
+    'name': 'choices',
+    'resource': resources.ChoiceResource,
+    'model': models.Choice
 }]
 
 
@@ -193,7 +193,21 @@ def import_schemas(data: dict):
         dataset.dict = data[param['name']]
         result = model_resource.import_data(dataset, dry_run=True)
         if result.has_errors():
-            return {param['name']: result.base_errors}
+            row_errors = result.row_errors()
+            row_errors = {
+                row_error[0]: [error_obj.error for error_obj in row_error[1]]
+                for row_error in row_errors
+            }
+
+            base_errors = result.base_errors
+            base_errors = [error_obj.error for error_obj in base_errors]
+
+            return {
+                param['name']: {
+                    'base_errors': base_errors,
+                    'row_errors': row_errors
+                }
+            }
 
         model_resource.import_data(dataset, dry_run=False)
 
