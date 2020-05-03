@@ -36,6 +36,7 @@ class ItemView(
     model_name = 'Item'
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+    multi_query = ('schema__in',)
     filter_serializer_class = ItemFilterSerializer
 
 
@@ -72,6 +73,7 @@ class ItemSchemaView(ItemView):
     model_name = 'ItemSchema'
     queryset = ItemSchema.objects.all()
     serializer_class = ItemSchemaSerializer
+    multi_query = ('category_id__in',)
     filter_serializer_class = ItemSchemaFilterSerializer
 
 

@@ -288,7 +288,7 @@ class BooleanValueSerializer(ValueSerializer):
         )
 
 
-class ChoiceSerializer(serializers.ModelSerializer):
+class ChoiceSerializer(MaskFieldSerializer):
 
     name = serializers.CharField(
         help_text='Choice label'
@@ -709,6 +709,31 @@ class ItemSerializer(MaskFieldSerializer, TrackTimeSerializer):
             'number_values',
             'text_values',
         )
+
+
+class FieldFilterSerializer(serializers.Serializer):
+    item_schema_id__in = serializers.ListSerializer(
+        child=serializers.IntegerField(),
+        required=False
+    )
+
+
+class ValueFilterSerializer(serializers.Serializer):
+    item_id__in = serializers.ListSerializer(
+        child=serializers.IntegerField(),
+        required=False
+    )
+
+
+class ChoiceFilterSerializer(serializers.Serializer):
+    field_id__in = serializers.ListSerializer(
+        child=serializers.IntegerField(),
+        required=False
+    )
+    field__item_schema_id__in = serializers.ListSerializer(
+        child=serializers.IntegerField(),
+        required=False
+    )
 
 
 class ItemFilterSerializer(serializers.Serializer):

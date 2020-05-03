@@ -6,6 +6,7 @@ from ._mixins import (
     RetrieveMixin,
     DestroyMixin,
     UpdateMixin,
+    FilterMixin
 )
 from ..models import (
     DateTimeField,
@@ -25,7 +26,8 @@ from ..serializers import (
     ChoicesFieldSerializer,
     ImagesFieldSerializer,
     FileFieldSerializer,
-    ItemFieldSerializer
+    ItemFieldSerializer,
+    FieldFilterSerializer
 )
 
 
@@ -35,13 +37,14 @@ class FieldView(
     RetrieveMixin,
     DestroyMixin,
     UpdateMixin,
+    FilterMixin,
     viewsets.GenericViewSet
 ):
 
     lookup_field = 'pk'
+    multi_query = ('item_schema_id__in',)
+    filter_serializer_class = FieldFilterSerializer
 
-    def get_queryset(self):
-        return self.queryset
 
 
 class DateTimeFieldView(FieldView):

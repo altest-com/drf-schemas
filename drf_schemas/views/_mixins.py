@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import QueryDict
 from rest_framework import status
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
@@ -26,10 +27,6 @@ class ListMixin:
 
     # noinspection PyUnresolvedReferences
     def list(self, request):
-        try:
-            list_serializer_class = self.list_serializer_class
-        except AttributeError:
-            list_serializer_class = self.serializer_class
         serializer_context = {'request': request}
         page = self.paginate_queryset(self.get_queryset())
 
@@ -37,7 +34,7 @@ class ListMixin:
         if fields is not None:
             fields = fields.split(',')
 
-        serializer = list_serializer_class(
+        serializer = self.serializer_class(
             page,
             context=serializer_context,
             many=True,
@@ -50,12 +47,8 @@ class CreateMixin:
 
     # noinspection PyUnresolvedReferences
     def create(self, request):
-        try:
-            create_serializer_class = self.create_serializer_class
-        except AttributeError:
-            create_serializer_class = self.serializer_class
         serializer_context = {'request': request}
-        serializer = create_serializer_class(
+        serializer = self.serializer_class(
             data=request.data,
             context=serializer_context
         )
@@ -73,17 +66,13 @@ class UpdateMixin:
     # noinspection PyUnresolvedReferences
     def partial_update(self, request, pk=None):
         try:
-            update_serializer_class = self.update_serializer_class
-        except AttributeError:
-            update_serializer_class = self.serializer_class
-        try:
             pk = int(pk)
             instance = self.queryset.get(pk=pk)
         except (ObjectDoesNotExist, ValueError):
             raise NotFound(f'A {self.model_name} with pk={pk} does not exist.')
 
         serializer_context = {'request': request}
-        serializer = update_serializer_class(
+        serializer = self.serializer_class(
             instance,
             data=request.data,
             context=serializer_context,
@@ -115,14 +104,21 @@ class DestroyMixin:
 
 class FilterMixin:
 
+    multi_query = ()
+
     def get_queryset(self):
         queryset = self.queryset
-        params = self.request.query_params
+        params: QueryDict = self.request.query_params
 
         if len(params):
+            params = params.lists()
+            data = {
+                key: value if key in self.multi_query else value[0]
+                for key, value in params
+            }
             serializer_class = self.filter_serializer_class
             serializer = serializer_class(
-                data=params.dict(),
+                data=data,
                 context={'request': self.request}
             )
             serializer.is_valid(raise_exception=True)

@@ -339,7 +339,7 @@ class ItemSchema(TrackTimeModel):
     config = models.TextField(blank=True, default='{}')
 
     def __str__(self):
-        return self.name
+        return f'[{self.pk}] {self.name}'
 
     @cached_property
     def items_count(self):
@@ -355,4 +355,4 @@ class Item(TrackTimeModel):
     )
 
     def __str__(self):
-        return f'Item [{self.pk}]'
+        return f'[{self.pk}] Item'

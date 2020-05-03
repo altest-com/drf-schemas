@@ -6,6 +6,7 @@ from ._mixins import (
     RetrieveMixin,
     DestroyMixin,
     UpdateMixin,
+    FilterMixin
 )
 from ..models import (
     DateTimeValue,
@@ -31,7 +32,9 @@ from ..serializers import (
     FileValueSerializer,
     ImageSerializer,
     FileSerializer,
-    ItemValueSerializer
+    ItemValueSerializer,
+    ChoiceFilterSerializer,
+    ValueFilterSerializer
 )
 
 
@@ -41,13 +44,13 @@ class ValueView(
     RetrieveMixin,
     DestroyMixin,
     UpdateMixin,
+    FilterMixin,
     viewsets.GenericViewSet
 ):
 
     lookup_field = 'pk'
-
-    def get_queryset(self):
-        return self.queryset
+    multi_query = ('item_id__in',)
+    filter_serializer_class = ValueFilterSerializer
 
 
 class DateTimeValueView(ValueView):
@@ -78,30 +81,12 @@ class ChoicesValueView(ValueView):
     model_name = 'ChoicesValue'
     queryset = ChoicesValue.objects.all()
     serializer_class = ChoicesValueSerializer
-    
-    
-class ChoiceView(ValueView):
-    model_name = 'Choice'
-    queryset = Choice.objects.all()
-    serializer_class = ChoiceSerializer
 
 
 class ImageView(ValueView):
     model_name = 'Image'
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
-    
-    
-class ImagesValueView(ValueView):
-    model_name = 'ImagesValue'
-    queryset = ImagesValue.objects.all()
-    serializer_class = ImagesValueSerializer
-
-
-class FileView(ValueView):
-    model_name = 'File'
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
 
 
 class FileValueView(ValueView):
@@ -114,3 +99,35 @@ class ItemValueView(ValueView):
     model_name = 'ItemValue'
     queryset = ItemValue.objects.all()
     serializer_class = ItemValueSerializer
+
+
+class ChoiceView(ValueView):
+    model_name = 'Choice'
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer
+
+    multi_query = ('field_id__in', 'field__item_schema_id__in')
+    filter_serializer_class = ChoiceFilterSerializer
+
+
+class FileView(
+    CreateMixin,
+    ListMixin,
+    RetrieveMixin,
+    DestroyMixin,
+    UpdateMixin,
+    viewsets.GenericViewSet
+):
+    model_name = 'File'
+    lookup_field = 'pk'
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
+
+    def get_queryset(self):
+        return self.queryset
+
+
+class ImagesValueView(FileView):
+    model_name = 'ImagesValue'
+    queryset = ImagesValue.objects.all()
+    serializer_class = ImagesValueSerializer
