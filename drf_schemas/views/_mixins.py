@@ -102,6 +102,7 @@ class DestroyMixin:
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 
+# noinspection PyUnresolvedReferences
 class FilterMixin:
 
     multi_query = ()

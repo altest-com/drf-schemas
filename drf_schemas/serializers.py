@@ -234,7 +234,8 @@ class TextValueSerializer(ValueSerializer):
     value = serializers.CharField(
         required=False,
         allow_blank=True,
-        help_text='Field value'
+        help_text='Field value',
+        trim_whitespace=False
     )
 
     field = serializers.PrimaryKeyRelatedField(
