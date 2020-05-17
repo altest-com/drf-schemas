@@ -9,6 +9,7 @@ import tablib
 from import_export.resources import modelresource_factory
 
 _field_params = [{
+    'type': 'boolean',
     'fields': 'boolean_fields',
     'values': 'boolean_values',
     'value_model': models.BooleanValue,
@@ -16,6 +17,7 @@ _field_params = [{
     'field_serializer': serializers.BooleanFieldSerializer,
     'value_serializer': serializers.BooleanValueSerializer,
 }, {
+    'type': 'choice',
     'fields': 'choices_fields',
     'values': 'choices_values',
     'value_model': models.ChoicesValue,
@@ -23,6 +25,7 @@ _field_params = [{
     'field_serializer': serializers.ChoicesFieldSerializer,
     'value_serializer': serializers.ChoicesValueSerializer,
 }, {
+    'type': 'datetime',
     'fields': 'datetime_fields',
     'values': 'datetime_values',
     'value_model': models.DateTimeValue,
@@ -30,6 +33,7 @@ _field_params = [{
     'field_serializer': serializers.DateTimeFieldSerializer,
     'value_serializer': serializers.DateTimeValueSerializer,
 }, {
+    'type': 'number',
     'fields': 'number_fields',
     'values': 'number_values',
     'value_model': models.NumberValue,
@@ -37,6 +41,7 @@ _field_params = [{
     'field_serializer': serializers.NumberFieldSerializer,
     'value_serializer': serializers.NumberValueSerializer,
 }, {
+    'type': 'image',
     'fields': 'images_fields',
     'values': 'images_values',
     'value_model': models.ImagesValue,
@@ -44,6 +49,7 @@ _field_params = [{
     'field_serializer': serializers.ImagesFieldSerializer,
     'value_serializer': serializers.ImagesValueSerializer,
 }, {
+    'type': 'file',
     'fields': 'file_fields',
     'values': 'file_values',
     'value_model': models.FileValue,
@@ -51,6 +57,7 @@ _field_params = [{
     'field_serializer': serializers.FileFieldSerializer,
     'value_serializer': serializers.FileValueSerializer,
 }, {
+    'type': 'text',
     'fields': 'text_fields',
     'values': 'text_values',
     'value_model': models.TextValue,
@@ -58,6 +65,7 @@ _field_params = [{
     'field_serializer': serializers.TextFieldSerializer,
     'value_serializer': serializers.TextValueSerializer,
 }, {
+    'type': 'item',
     'fields': 'item_fields',
     'values': 'item_values',
     'value_model': models.ItemValue,
@@ -72,6 +80,20 @@ _multi_values = (
     'images_values',
     'file_values'
 )
+
+#
+# def repr_item(item: models.Item):
+#     item_repr = []
+#     for param in _field_params:
+#         values = getattr(item, param['values']).all()
+#         for value in values:
+#             field = value.field
+#             if field.repr:
+#                 item_repr.append({
+#                     'field': field.id,
+#                     'value': value.value,
+#                     'type': param['type']
+#                 })
 
 
 def update_item(item: models.Item = None):

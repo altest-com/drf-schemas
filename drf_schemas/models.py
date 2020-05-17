@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 from django.utils.functional import cached_property
 
 
@@ -27,14 +26,13 @@ class Field(TrackTimeModel):
 
 class Value(TrackTimeModel):
 
-    def __str__(self):
-        # noinspection PyUnresolvedReferences
-        return f'{self.__class__} [{self.pk}]'
-
     @cached_property
     def order(self):
         # noinspection PyUnresolvedReferences
         return self.field.order
+
+    def __str__(self):
+        return f'{self.field.item_schema.name}.{self.field.name} [{self.pk}]'
 
     class Meta:
         abstract = True
@@ -43,6 +41,8 @@ class Value(TrackTimeModel):
 class TextField(Field):
 
     default = models.TextField(blank=True, default='')
+    query = models.BooleanField(blank=True, default=False)
+    represent = models.BooleanField(blank=True, default=False)
 
     item_schema = models.ForeignKey(
         'ItemSchema',
@@ -124,7 +124,7 @@ class NumberValue(Value):
 
 class BooleanField(Field):
 
-    default = models.BooleanField(blank=True, null=True)
+    default = models.BooleanField(blank=True, default=False, null=True)
 
     item_schema = models.ForeignKey(
         'ItemSchema',
@@ -134,7 +134,7 @@ class BooleanField(Field):
 
 
 class BooleanValue(Value):
-    value = models.BooleanField(blank=True, null=True)
+    value = models.BooleanField(blank=True, default=False, null=True)
     field = models.ForeignKey(
         'BooleanField',
         on_delete=models.CASCADE,
@@ -327,12 +327,14 @@ class ItemSchema(TrackTimeModel):
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
         related_name='schemas'
     )
     image = models.ForeignKey(
         'Image',
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
         related_name='schema_images'
     )
@@ -342,8 +344,15 @@ class ItemSchema(TrackTimeModel):
         return f'[{self.pk}] {self.name}'
 
     @cached_property
+    def query_fields(self):
+        return [field.id for field in self.text_fields.all() if field.query]
+
+    @cached_property
     def items_count(self):
         return self.items.all().count()
+
+
+_repr_types = ('boolean', 'choices', 'datetime', 'number', 'text')
 
 
 class Item(TrackTimeModel):
@@ -354,5 +363,10 @@ class Item(TrackTimeModel):
         related_name='items'
     )
 
+    @cached_property
+    def represent(self):
+        values = self.text_values.all()
+        return [value.id for value in values if value.field.represent]
+
     def __str__(self):
-        return f'[{self.pk}] Item'
+        return f'Item [{self.pk}]'

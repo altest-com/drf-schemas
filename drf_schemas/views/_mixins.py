@@ -16,9 +16,14 @@ class RetrieveMixin:
         except (ObjectDoesNotExist, ValueError):
             raise NotFound(f'A {self.model_name} with pk={pk} does not exist.')
 
+        fields = request.query_params.get('fields', None)
+        if fields is not None:
+            fields = fields.split(',')
+
         serializer = self.serializer_class(
             instance,
-            context=serializer_context
+            context=serializer_context,
+            fields=fields
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
